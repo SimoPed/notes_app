@@ -39,12 +39,15 @@ class _HomePageState extends State<HomePage> {
                   );
                 }
                 if (snapshot.hasData) {
-                  return GridView(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 1),
-                    children: snapshot.data!.docs
-                        .map((note) => CardNotes(doc: note, onTap: () {}))
-                        .toList(),
+                  return Padding(
+                    padding: const EdgeInsets.only(top: 20),
+                    child: GridView(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 1),
+                      children: snapshot.data!.docs
+                          .map((note) => CardNotes(doc: note, onTap: () {}))
+                          .toList(),
+                    ),
                   );
                 }
                 return Text('There is no Notes');
