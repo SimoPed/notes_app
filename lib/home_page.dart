@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:notes_app/card_notes.dart';
+import 'firebase_options.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -9,7 +12,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -27,72 +29,47 @@ class _HomePageState extends State<HomePage> {
               ),
             ],
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 50),
-            child: Container(
-              decoration: BoxDecoration(
-                  color: Colors.amberAccent,
-                  borderRadius: BorderRadius.circular(30)),
-              height: 120,
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 20),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(50),
-                            color: Colors.white,
-                          ),
-                          height: 70,
-                          width: 70,
-                          child: Padding(
-                              padding: const EdgeInsets.all(15),
-                              child: Image.asset(
-                                './assets/images/thinking_face.png',
-                                scale: 0.5,
-                              )),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: const [
-                            Text(
-                              '5 Notes',
-                              style: TextStyle(
-                                  decoration: TextDecoration.none,
-                                  color: Colors.white,
-                                  fontSize: 15),
-                            ),
-                            Text(
-                              'My Lectures',
-                              style: TextStyle(
-                                  decoration: TextDecoration.none,
-                                  color: Colors.white,
-                                  fontSize: 15),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Icon(Icons.favorite_border)
-                    ],
-                  ),
-                ],
+          Expanded(
+            child: StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance.collection('Notes').snapshots(),
+              builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                if (snapshot.hasData) {
+                  return GridView(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 1),
+                    children: snapshot.data!.docs
+                        .map((note) => CardNotes(doc: note, onTap: () {}))
+                        .toList(),
+                  );
+                }
+                return Text('There is no Notes');
+              },
+            ),
+          ),
+          Expanded(
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(shape: const CircleBorder()),
+                child: Container(
+                  width: 50,
+                  height: 50,
+                  decoration: BoxDecoration(
+                      color: Colors.blue,
+                      borderRadius: BorderRadius.circular(50)),
+                  child: const Icon(Icons.add),
+                ),
               ),
             ),
           )
         ],
       ),
     );
-  }
-
-  void onPressed() {
-    print('hello');
   }
 }
