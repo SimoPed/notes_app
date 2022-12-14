@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:notes_app/style/app_style.dart';
 
 class CardNotes extends StatelessWidget {
   final QueryDocumentSnapshot doc;
@@ -9,11 +10,13 @@ class CardNotes extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
+    return GestureDetector(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 20),
+        child: Container(
           decoration: BoxDecoration(
-              color: Colors.amberAccent,
+              color: AppStyle.cardsColor[doc['color_id']],
               borderRadius: BorderRadius.circular(30)),
           height: 120,
           child: Stack(
@@ -34,18 +37,23 @@ class CardNotes extends StatelessWidget {
                             doc['note_title'],
                             style: const TextStyle(
                                 decoration: TextDecoration.none,
-                                color: Colors.white,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
                                 fontSize: 22),
                           ),
                         ),
-                        SizedBox(
-                          width: 150,
-                          child: Text(
-                            doc['creation_date'],
-                            style: const TextStyle(
-                                decoration: TextDecoration.none,
-                                color: Colors.white,
-                                fontSize: 10),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 5),
+                          child: SizedBox(
+                            width: 150,
+                            child: Text(
+                              doc['creation_date'],
+                              style: const TextStyle(
+                                  decoration: TextDecoration.none,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.normal,
+                                  fontSize: 10),
+                            ),
                           ),
                         ),
                       ],
@@ -62,7 +70,8 @@ class CardNotes extends StatelessWidget {
                             doc['note_content'],
                             style: const TextStyle(
                               decoration: TextDecoration.none,
-                              color: Colors.white,
+                              color: Colors.black,
+                                fontWeight: FontWeight.normal,
                               fontSize: 12,
                               height: 1.5
                             ),
@@ -80,13 +89,13 @@ class CardNotes extends StatelessWidget {
                               shape: const CircleBorder(),
                               backgroundColor: Colors.transparent,
                               shadowColor: Colors.transparent),
-                          child: const Icon(Icons.favorite_border)))
+                          child: const Icon(Icons.favorite_border, color: Colors.black,)))
                 ],
               ),
             ],
           ),
         ),
-      ],
+      ),
     );
   }
 }

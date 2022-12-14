@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:notes_app/card_notes.dart';
+import 'package:notes_app/note_editor.dart';
+import 'package:notes_app/note_reader.dart';
 import 'firebase_options.dart';
 
 class HomePage extends StatefulWidget {
@@ -39,35 +41,34 @@ class _HomePageState extends State<HomePage> {
                   );
                 }
                 if (snapshot.hasData) {
-                  return Padding(
-                    padding: const EdgeInsets.only(top: 20),
-                    child: GridView(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 1),
-                      children: snapshot.data!.docs
-                          .map((note) => CardNotes(doc: note, onTap: () {}))
-                          .toList(),
-                    ),
+                  return ListView(
+                    // gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    //     crossAxisCount: 1),
+                    children: snapshot.data!.docs
+                        .map((note) => CardNotes(doc: note, onTap: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => NoteReader(note)));
+                    }))
+                        .toList(),
                   );
                 }
                 return Text('There is no Notes');
               },
             ),
           ),
-          Expanded(
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(shape: const CircleBorder()),
-                child: Container(
-                  width: 50,
-                  height: 50,
-                  decoration: BoxDecoration(
-                      color: Colors.blue,
-                      borderRadius: BorderRadius.circular(50)),
-                  child: const Icon(Icons.add),
-                ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => NoteEditor()));
+              },
+              style: ElevatedButton.styleFrom(shape: const CircleBorder()),
+              child: Container(
+                width: 50,
+                height: 50,
+                decoration: BoxDecoration(
+                    color: Colors.blue,
+                    borderRadius: BorderRadius.circular(50)),
+                child: const Icon(Icons.add),
               ),
             ),
           )
